@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Memefi Bot [SmartBot]
 // @namespace    https://smartbot.black/
-// @version      1.0.0
+// @version      1.0.1
 // @description  Bot for playing memefi in telegram
 // @author       Smartbot Team
 // @match        https://tg-app.memefi.club/*
