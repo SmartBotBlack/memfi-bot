@@ -19,16 +19,17 @@
 	function getEnergy() {
 		return (
 			(document
-				.querySelector('[alt="Energy"]')
-				?.nextSibling?.querySelector("span")
+				.querySelector("#Shape")
+				.parentElement?.nextSibling?.querySelector("span")
 				?.innerText?.replace(",", "") ?? 0) * 1
 		);
 	}
+
 	function getMaxEnergy() {
 		return (
 			(document
-				.querySelector('[alt="Energy"]')
-				?.nextSibling?.querySelector("span:nth-child(2)")
+				.querySelector("#Shape")
+				.parentElement?.nextSibling?.querySelector("span:nth-child(2)")
 				?.innerText?.replace(",", "")
 				?.replace("/", "") ?? 0) * 1
 		);
@@ -38,7 +39,6 @@
 		function clickRandom() {
 			const x = getRandomInt(minX, maxX);
 			const y = getRandomInt(minY, maxY);
-
 			const pointerEventInit = {
 				pointerId: 1,
 				bubbles: true,
@@ -115,13 +115,20 @@
 	}
 
 	setInterval(() => {
-		if (!isRun && getEnergy() > (getRandomInt(70, 90) / 100) * getMaxEnergy()) {
-			isRun = true;
-			start();
-		}
+		try {
+			if (
+				!isRun &&
+				getEnergy() > (getRandomInt(70, 90) / 100) * getMaxEnergy()
+			) {
+				isRun = true;
+				start();
+			}
 
-		[...document.querySelectorAll("button")]
-			.find((button) => button.innerText.includes("CONTINUE PLAYING"))
-			?.click();
+			[...document.querySelectorAll("button")]
+				.find((button) => button.innerText.includes("CONTINUE PLAYING"))
+				?.click();
+		} catch (e) {
+			console.error(e);
+		}
 	}, 1e4);
 })();
