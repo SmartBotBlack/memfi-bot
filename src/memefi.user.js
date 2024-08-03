@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Memefi Bot [SmartBot]
 // @namespace    https://smartbot.black/
-// @version      1.0.1
+// @version      1.2.0
 // @description  Bot for playing memefi in telegram
 // @author       Smartbot Team
 // @match        https://tg-app.memefi.club/*
@@ -19,8 +19,8 @@
 	function getEnergy() {
 		return (
 			(document
-				.querySelector("#Shape")
-				.parentElement?.nextSibling?.querySelector("span")
+				.querySelector('g[clip-path="url(#clip0_21455_16555)"]')
+				?.parentElement?.nextSibling?.querySelector("span")
 				?.innerText?.replace(",", "") ?? 0) * 1
 		);
 	}
@@ -28,12 +28,44 @@
 	function getMaxEnergy() {
 		return (
 			(document
-				.querySelector("#Shape")
-				.parentElement?.nextSibling?.querySelector("span:nth-child(2)")
+				.querySelector('g[clip-path="url(#clip0_21455_16555)"]')
+				?.parentElement?.nextSibling?.querySelector("span:nth-child(2)")
 				?.innerText?.replace(",", "")
 				?.replace("/", "") ?? 0) * 1
 		);
 	}
+
+	const runSlots = async () => {
+		const buttonSlot = document.querySelector(
+			'img[src="/assets/slotMachine/slot-energy-icon.svg"]',
+		).parentElement;
+		const countSlot = buttonSlot.parentElement.nextSibling.innerText;
+		if (countSlot.includes(":") || countSlot * 1 < 10) {
+			return;
+		}
+
+		try {
+			buttonSlot.click();
+
+			await new Promise((res) => setTimeout(res, 10 * 1000));
+
+			const avaliableSlot =
+				document.querySelector(
+					'path[d="M28.9165 4.672L28.8372 8.36668L20.4514 8.08203L28.3435 7.81806L28.9165 4.672Z"]',
+				).parentElement.nextSibling.innerText * 1;
+
+			for (let i = 0; i < avaliableSlot; ++i) {
+				[...document.querySelectorAll("button")]
+					.find((button) => button.innerText.includes("SPIN"))
+					.click();
+				await new Promise((res) => setTimeout(res, 5 * 1000));
+			}
+		} catch (err) {
+			console.error(err);
+		} finally {
+			window.location.replace("/");
+		}
+	};
 
 	function clickAtRandomIntervals(minX, maxX, minY, maxY, minDelay, maxDelay) {
 		function clickRandom() {
@@ -114,7 +146,7 @@
 		);
 	}
 
-	setInterval(() => {
+	const repeater = async () => {
 		try {
 			if (
 				!isRun &&
@@ -127,8 +159,18 @@
 			[...document.querySelectorAll("button")]
 				.find((button) => button.innerText.includes("CONTINUE PLAYING"))
 				?.click();
+
+			if (!isRun) await runSlots();
 		} catch (e) {
 			console.error(e);
 		}
+
+		setTimeout(() => {
+			requestAnimationFrame(repeater);
+		}, 1e4);
+	};
+
+	setTimeout(() => {
+		requestAnimationFrame(repeater);
 	}, 1e4);
 })();
