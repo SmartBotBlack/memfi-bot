@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Memefi Bot [SmartBot]
 // @namespace    https://smartbot.black/
-// @version      1.2.0
+// @version      1.3.0
 // @description  Bot for playing memefi in telegram
 // @author       Smartbot Team
 // @match        https://tg-app.memefi.club/*
@@ -11,6 +11,7 @@
 
 (() => {
 	let isRun = false;
+	const LAST_RUN_CLAIM = "lastRunClaim";
 
 	function getRandomInt(min, max) {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -60,6 +61,52 @@
 					.click();
 				await new Promise((res) => setTimeout(res, 5 * 1000));
 			}
+		} catch (err) {
+			console.error(err);
+		} finally {
+			window.location.replace("/");
+		}
+	};
+
+	const tapBot = async () => {
+		try {
+			[...document.querySelectorAll("p")]
+				.find((p) => p.innerText.includes("Boosters"))
+				.click();
+			await new Promise((res) => setTimeout(res, 1e4));
+
+			const runTapBot = async () => {
+				const tapBot = [...document.querySelectorAll("h5")].find((p) =>
+					p.innerText.includes("TAP BOT"),
+				);
+				const available = Number.parseInt(
+					tapBot.nextSibling
+						.querySelectorAll("span")[2]
+						.innerText.split("/")[0],
+				);
+				if (available > 0) {
+					tapBot.click();
+					await new Promise((res) => setTimeout(res, 1e4));
+
+					const claimBtn = [...document.querySelectorAll("p")].find((p) =>
+						p.innerText.includes("CLAIM COINS"),
+					);
+					const activateBtn = [...document.querySelectorAll("p")].find((p) =>
+						p.innerText.includes("ACTIVATE BOT"),
+					);
+
+					if (activateBtn) {
+						activateBtn?.click();
+						await new Promise((res) => setTimeout(res, 1e4));
+					} else if (claimBtn) {
+						claimBtn?.click();
+						await new Promise((res) => setTimeout(res, 1e4));
+						await runTapBot();
+					}
+				}
+			};
+
+			await runTapBot();
 		} catch (err) {
 			console.error(err);
 		} finally {
@@ -161,6 +208,15 @@
 				?.click();
 
 			if (!isRun) await runSlots();
+
+			const lastRunTime = Number.parseInt(
+				localStorage.getItem(LAST_RUN_CLAIM) || "0",
+				10,
+			);
+			if (!isRun && Date.now() - lastRunTime >= 60 * 60 * 1000) {
+				await tapBot();
+				localStorage.setItem(LAST_RUN_CLAIM, Date.now().toString());
+			}
 		} catch (e) {
 			console.error(e);
 		}
