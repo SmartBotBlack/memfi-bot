@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Memefi Bot [SmartBot]
 // @namespace    https://smartbot.black/
-// @version      1.3.0
+// @version      1.3.1
 // @description  Bot for playing memefi in telegram
 // @author       Smartbot Team
 // @match        https://tg-app.memefi.club/*
@@ -48,7 +48,7 @@
 		try {
 			buttonSlot.click();
 
-			await new Promise((res) => setTimeout(res, 10 * 1000));
+			await new Promise((res) => setTimeout(res, getRandomInt(10, 20) * 1000));
 
 			const avaliableSlot =
 				document.querySelector(
@@ -59,7 +59,7 @@
 				[...document.querySelectorAll("button")]
 					.find((button) => button.innerText.includes("SPIN"))
 					.click();
-				await new Promise((res) => setTimeout(res, 5 * 1000));
+				await new Promise((res) => setTimeout(res, getRandomInt(5, 10) * 1000));
 			}
 		} catch (err) {
 			console.error(err);
@@ -73,20 +73,23 @@
 			[...document.querySelectorAll("p")]
 				.find((p) => p.innerText.includes("Boosters"))
 				.click();
-			await new Promise((res) => setTimeout(res, 1e4));
+			await new Promise((res) => setTimeout(res, getRandomInt(10, 20) * 1000));
 
 			const runTapBot = async () => {
 				const tapBot = [...document.querySelectorAll("h5")].find((p) =>
 					p.innerText.includes("TAP BOT"),
 				);
 				const available = Number.parseInt(
-					tapBot.nextSibling
-						.querySelectorAll("span")[2]
-						.innerText.split("/")[0],
+					(
+						tapBot.nextSibling.querySelectorAll("span")[2] ||
+						tapBot.nextSibling.querySelectorAll("span")[1]
+					).innerText.split("/")[0],
 				);
 				if (available > 0) {
 					tapBot.click();
-					await new Promise((res) => setTimeout(res, 1e4));
+					await new Promise((res) =>
+						setTimeout(res, getRandomInt(10, 20) * 1000),
+					);
 
 					const claimBtn = [...document.querySelectorAll("p")].find((p) =>
 						p.innerText.includes("CLAIM COINS"),
@@ -97,10 +100,14 @@
 
 					if (activateBtn) {
 						activateBtn?.click();
-						await new Promise((res) => setTimeout(res, 1e4));
+						await new Promise((res) =>
+							setTimeout(res, getRandomInt(10, 20) * 1000),
+						);
 					} else if (claimBtn) {
 						claimBtn?.click();
-						await new Promise((res) => setTimeout(res, 1e4));
+						await new Promise((res) =>
+							setTimeout(res, getRandomInt(10, 20) * 1000),
+						);
 						await runTapBot();
 					}
 				}
