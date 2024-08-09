@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Memefi Bot [SmartBot]
 // @namespace    https://smartbot.black/
-// @version      1.3.1
+// @version      1.4.0
 // @description  Bot for playing memefi in telegram
 // @author       Smartbot Team
 // @match        https://tg-app.memefi.club/*
@@ -36,6 +36,18 @@
 		);
 	}
 
+	const createTouch = (target, x, y) =>
+		new Touch({
+			identifier: Date.now(),
+			target: target,
+			clientX: x,
+			clientY: y,
+			radiusX: 2.5,
+			radiusY: 2.5,
+			rotationAngle: 0,
+			force: 0.5,
+		});
+
 	const runSlots = async () => {
 		const buttonSlot = document.querySelector(
 			'img[src="/assets/slotMachine/slot-energy-icon.svg"]',
@@ -51,16 +63,26 @@
 			await new Promise((res) => setTimeout(res, getRandomInt(10, 20) * 1000));
 
 			const avaliableSlot =
-				document.querySelector(
-					'path[d="M28.9165 4.672L28.8372 8.36668L20.4514 8.08203L28.3435 7.81806L28.9165 4.672Z"]',
-				).parentElement.nextSibling.innerText * 1;
+				document.querySelector('svg[viewBox="0 0 44 44"]').nextSibling
+					.innerText * 1;
 
-			for (let i = 0; i < avaliableSlot; ++i) {
-				[...document.querySelectorAll("button")]
-					.find((button) => button.innerText.includes("SPIN"))
-					.click();
-				await new Promise((res) => setTimeout(res, getRandomInt(5, 10) * 1000));
+			if (avaliableSlot > 0) {
+				const btn = [...document.querySelectorAll("button")].find((button) =>
+					button.innerText.includes("SPIN"),
+				);
+
+				const touchstartEvent = new TouchEvent("touchstart", {
+					bubbles: true,
+					cancelable: true,
+					touches: [createTouch(btn, x, y)],
+					targetTouches: [createTouch(btn, x, y)],
+					changedTouches: [createTouch(btn, x, y)],
+				});
+
+				btn.dispatchEvent(touchstartEvent);
 			}
+
+			await new Promise((res) => setTimeout(res, getRandomInt(20, 40) * 1000));
 		} catch (err) {
 			console.error(err);
 		} finally {
@@ -209,6 +231,9 @@
 				isRun = true;
 				start();
 			}
+
+			// Close btn
+			document.querySelector('svg[viewBox="0 0 16 16"]')?.click();
 
 			[...document.querySelectorAll("button")]
 				.find((button) => button.innerText.includes("CONTINUE PLAYING"))
