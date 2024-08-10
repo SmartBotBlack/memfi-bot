@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Memefi Bot [SmartBot]
 // @namespace    https://smartbot.black/
-// @version      1.4.0
+// @version      1.4.1
 // @description  Bot for playing memefi in telegram
 // @author       Smartbot Team
 // @match        https://tg-app.memefi.club/*
@@ -232,8 +232,14 @@
 				start();
 			}
 
-			// Close btn
-			document.querySelector('svg[viewBox="0 0 16 16"]')?.click();
+			try {
+				// Close btn
+				document
+					.querySelector('svg[viewBox="0 0 16 16"]')
+					?.parentElement?.click();
+			} catch (err) {
+				console.error(err);
+			}
 
 			[...document.querySelectorAll("button")]
 				.find((button) => button.innerText.includes("CONTINUE PLAYING"))
