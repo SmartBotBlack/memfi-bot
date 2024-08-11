@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Memefi Bot [SmartBot]
 // @namespace    https://smartbot.black/
-// @version      1.4.1
+// @version      1.4.2
 // @description  Bot for playing memefi in telegram
 // @author       Smartbot Team
 // @match        https://tg-app.memefi.club/*
@@ -70,6 +70,9 @@
 				const btn = [...document.querySelectorAll("button")].find((button) =>
 					button.innerText.includes("SPIN"),
 				);
+
+				const x = 10;
+				const y = 10;
 
 				const touchstartEvent = new TouchEvent("touchstart", {
 					bubbles: true,
