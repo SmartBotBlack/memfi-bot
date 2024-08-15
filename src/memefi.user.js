@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Memefi Bot [SmartBot]
 // @namespace    https://smartbot.black/
-// @version      1.4.2
+// @version      1.4.3
 // @description  Bot for playing memefi in telegram
 // @author       Smartbot Team
 // @match        https://tg-app.memefi.club/*
@@ -237,9 +237,9 @@
 
 			try {
 				// Close btn
-				document
-					.querySelector('svg[viewBox="0 0 16 16"]')
-					?.parentElement?.click();
+				[...document.querySelectorAll('g[id*="Close"]')]
+					.map((el) => el?.parentElement?.parentElement)
+					.map((el) => el?.click());
 			} catch (err) {
 				console.error(err);
 			}
