@@ -27,7 +27,7 @@ Tampermonkey is a popular userscript manager that is available for various brows
 
 1. **telegram.user.js**: This script enables the game to run in your browser.
 
-   - Click the following link to install the script: [Install telegram.user.js](https://raw.githubusercontent.com/SmartBotBlack/memfi-bot/main/src/telegram.user.js)
+   - Click the following link to install the script: [Install telegram.user.js](https://raw.githubusercontent.com/SmartBotBlack/telegram-web-fix-for-open-app/main/src/telegram.user.js)
    - Tampermonkey will open and prompt you to install the script. Click `Install`.
 
 2. **memefi.user.js**: This is the main bot script that automates the game.
