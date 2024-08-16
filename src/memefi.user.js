@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Memefi Bot [SmartBot]
 // @namespace    https://smartbot.black/
-// @version      1.4.3
+// @version      1.5.0
 // @description  Bot for playing memefi in telegram
 // @author       Smartbot Team
 // @match        https://tg-app.memefi.club/*
@@ -220,8 +220,8 @@
 			document.body.scrollWidth - buttonsLeft.x - buttonsLeft.width - 10,
 			buttonsTop.y + buttonsTop.height + 10,
 			buttonsBottom.y - 10,
-			25,
-			750,
+			5,
+			650,
 		);
 	}
 
@@ -240,6 +240,19 @@
 				[...document.querySelectorAll('g[id*="Close"]')]
 					.map((el) => el?.parentElement?.parentElement)
 					.map((el) => el?.click());
+			} catch (err) {
+				console.error(err);
+			}
+
+			try {
+				const reloadBtn = [...document.querySelectorAll("button")].find(
+					(button) => button.innerText.includes("RELOAD BOT"),
+				);
+
+				if (reloadBtn) {
+					reloadBtn.click();
+					await new Promise((res) => setTimeout(res, 10 * 1e3));
+				}
 			} catch (err) {
 				console.error(err);
 			}
