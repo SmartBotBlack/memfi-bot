@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Memefi Bot [SmartBot]
 // @namespace    https://smartbot.black/
-// @version      1.5.0
+// @version      1.6.0
 // @description  Bot for playing memefi in telegram
 // @author       Smartbot Team
 // @match        https://tg-app.memefi.club/*
@@ -39,7 +39,7 @@
 	const createTouch = (target, x, y) =>
 		new Touch({
 			identifier: Date.now(),
-			target: target,
+			target,
 			clientX: x,
 			clientY: y,
 			radiusX: 2.5,
@@ -49,9 +49,7 @@
 		});
 
 	const runSlots = async () => {
-		const buttonSlot = document.querySelector(
-			'img[src="/assets/slotMachine/slot-energy-icon.svg"]',
-		).parentElement;
+		const buttonSlot = document.querySelector(".pulse-blue-animation button");
 		const countSlot = buttonSlot.parentElement.nextSibling.innerText;
 		if (countSlot.includes(":") || countSlot * 1 < 10) {
 			return;
@@ -245,6 +243,15 @@
 			}
 
 			try {
+				// Close promo
+				document
+					.querySelector('div[role="presentation"] button svg[width="30"]')
+					?.parentElement?.click();
+			} catch (err) {
+				console.error(err);
+			}
+
+			try {
 				const reloadBtn = [...document.querySelectorAll("button")].find(
 					(button) => button.innerText.includes("RELOAD BOT"),
 				);
@@ -261,7 +268,13 @@
 				.find((button) => button.innerText.includes("CONTINUE PLAYING"))
 				?.click();
 
-			if (!isRun) await runSlots();
+			if (!isRun) {
+				try {
+					await runSlots();
+				} catch (err) {
+					console.error(err, "runSlots");
+				}
+			}
 
 			const lastRunTime = Number.parseInt(
 				localStorage.getItem(LAST_RUN_CLAIM) || "0",
